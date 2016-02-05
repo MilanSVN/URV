@@ -1,7 +1,7 @@
-#include <lcthw/list.h>
-#include <lcthw/dbg.h>
+#include "list.h"
 
-List *List_create()
+
+List* List_create()
 {
     return calloc(1, sizeof(List));
 }
@@ -35,7 +35,7 @@ void List_push(List* list, void* value)
 
     node->value = value;
 
-    if(list->last == NULL) 
+    if(list->first == NULL) 
     {
         list->first = node;
         list->last = node;
@@ -52,7 +52,7 @@ void List_push(List* list, void* value)
 
 void* List_pop(List* list)
 {
-    ListNode* node = list->last;
+    ListNode* node = list->first;
     return node != NULL ? List_remove(list, node) : NULL;
 }
 
@@ -66,16 +66,17 @@ void* List_remove(List* list, ListNode* node)
         list->first = NULL;
         list->last = NULL;
     }
-    else if(node == list->first) 
-    {
-        list->first = node->next;
-        list->first->prev = NULL;
-    }
     else if (node == list->last) 
     {
         list->last = node->prev;
         list->last->next = NULL;
     }
+    else if(node == list->first) 
+    {
+        list->first = node->next;
+        list->first->prev = NULL;
+    }
+
     else 
     {
         ListNode *after = node->next;
@@ -87,4 +88,5 @@ void* List_remove(List* list, ListNode* node)
     list->count--;
     result = node->value;
     free(node);
+    return result;
 }
